@@ -4,7 +4,7 @@ steps:
   - functions
   - deploy
   - funcion_gcp
-  - --runtime=python11
+  - --runtime=python39
   - --region=europe-west1
   - --trigger-bucket=gs://bucket_ejercicio_gcp
   - --allow-unauthenticated
