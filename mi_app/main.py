@@ -1,9 +1,6 @@
 import json
 from google.cloud import storage, firestore
 
-# Creando instancias de Cloud Storage y Cloud Firestore
-storage_client = storage.Client()
-firestore_client = firestore.Client()
 def funcion_gcp(event, context):
     """Triggered by a change to a Cloud Storage bucket.
     Args:
@@ -13,32 +10,24 @@ def funcion_gcp(event, context):
     file = event
     print(f"Processing file: {file['name']}.")
 
-
-
-
-def gcs_to_firestore(event, context):
-    # Obtiene el nombre del bucket y la clave del archivo JSON del evento de GCS
-    bucket = event['bucket']
-    file_name = event['name']
-    print(bucket)
-    print(file_name)
-
-    # Descarga el archivo JSON desde Cloud Storage
-    bucket = storage_client.get_bucket(bucket)
-    blob = bucket.blob(file_name)
-    json_data = blob.download_as_text()
-
-    # Parsea el JSON
-    data = json.loads(json_data)
-
-    # Inserta los datos en Cloud Firestore
+def write_to_firestore(request):
+    # Inicializa el cliente de Firestore
     db = firestore.Client()
-    doc_ref = db.collection('bbdd-ejercicio-gcp').document()
-    doc_ref.set({
-        'ID': data['ID'],
-        'Nombre': data['Nombre'],
-        'Correo electrónico': data['Correo electrónico'],
-        'Fecha de registro': data['Fecha de registro']
-    })
 
-    return 'Proceso completado'
+    # Nombre de la colección y documento en Firestore
+    collection_name = "mi-coleccion"
+    document_name = "mi-documento"
+
+    # Datos a escribir en Firestore (puedes personalizar esto según tus necesidades)
+    data = {
+        'campo1': 'valor1',
+        'campo2': 'valor2',
+        'campo3': 'valor3'
+    }
+
+    # Escribe los datos en Firestore
+    doc_ref = db.collection(collection_name).document(document_name)
+    doc_ref.set(data)
+
+    return 'Datos escritos en Firestore correctamente.'
+
