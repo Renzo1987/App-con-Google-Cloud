@@ -1,6 +1,9 @@
 import json
 from google.cloud import storage, firestore
 
+# Creando instancias de Cloud Storage y Cloud Firestore
+storage_client = storage.Client()
+firestore_client = firestore.Client()
 def funcion_gcp(event, context):
     """Triggered by a change to a Cloud Storage bucket.
     Args:
@@ -10,9 +13,8 @@ def funcion_gcp(event, context):
     file = event
     print(f"Processing file: {file['name']}.")
 
-# Creando instancias de Cloud Storage y Cloud Firestore
-storage_client = storage.Client()
-firestore_client = firestore.Client()
+
+
 
 def gcs_to_firestore(event, context):
     # Obtiene el nombre del bucket y la clave del archivo JSON del evento de GCS
