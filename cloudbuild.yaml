@@ -1,7 +1,6 @@
 steps:
 - name: 'gcr.io/cloud-builders/gcloud'
   args:
-  - gcloud
   - functions
   - deploy
   - funcion_gcp
@@ -9,4 +8,4 @@ steps:
   - --region=europe-west1
   - --trigger-type=git-push
   - --allow-unauthenticated
-  - --source=/mi_app
+  - --source=./mi_app
