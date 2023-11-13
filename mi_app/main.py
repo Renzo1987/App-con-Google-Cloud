@@ -1,6 +1,15 @@
 import json
 from google.cloud import storage, firestore
 
+def funcion_gcp(event, context):
+    """Triggered by a change to a Cloud Storage bucket.
+    Args:
+         event (dict): Event payload.
+         context (google.cloud.functions.Context): Metadata for the event.
+    """
+    file = event
+    print(f"Processing file: {file['name']}.")
+
 # Creando instancias de Cloud Storage y Cloud Firestore
 storage_client = storage.Client()
 firestore_client = firestore.Client()
@@ -31,4 +40,3 @@ def gcs_to_firestore(event, context):
     })
 
     return 'Proceso completado'
-
