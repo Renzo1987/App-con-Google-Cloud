@@ -6,6 +6,6 @@ steps:
   - funcion_gcp
   - --runtime=python39
   - --region=europe-west1
-  - --trigger-type=git-push
+  - --trigger-bucket=gs://bucket_ejercicio_gcp
   - --allow-unauthenticated
   - --source=./mi_app
