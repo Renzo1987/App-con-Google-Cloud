@@ -1,5 +1,5 @@
 import json
-from google.cloud import storage, firestore
+from google.cloud import firestore
 
 def funcion_gcp(event, context):
     """Triggered by a change to a Cloud Storage bucket.
