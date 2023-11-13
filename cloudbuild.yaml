@@ -1,11 +1,12 @@
 steps:
 - name: 'gcr.io/cloud-builders/gcloud'
   args:
-  - 'gcloud'
-  - 'functions'
-  - 'deploy'
-  - 'funcion_gcp'
-  - '--region=europe-west1'
-  - '--source=/mi_app'
-  - '--trigger-type=git-push'
-  - '--runtime=python3.9'
+  - gcloud
+  - functions
+  - deploy
+  - funcion_gcp
+  - --runtime=python39
+  - --region=europe-west1
+  - --trigger-type=git-push
+  - --allow-unauthenticated
+  - --source=/mi_app
