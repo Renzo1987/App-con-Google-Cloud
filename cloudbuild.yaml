@@ -1,0 +1,11 @@
+steps:
+- name: 'gcr.io/cloud-builders/gcloud'
+  args:
+  - gcloud
+  - functions
+  - deploy
+  - funcion_gcp
+  - --region=europe-west1
+  - --source=/mi_app
+  - --trigger-type=git-push
+  - --runtime=python3.9
