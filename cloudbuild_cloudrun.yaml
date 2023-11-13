@@ -8,4 +8,4 @@ steps:
   - --region=europe-west1
   - --trigger-bucket=gs://bucket_ejercicio_gcp
   - --allow-unauthenticated
-  - --source=./mi_app
+  - --source=./mi_app/cloud_function
