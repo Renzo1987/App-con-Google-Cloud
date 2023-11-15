@@ -14,4 +14,4 @@ def hello_gcs(event, context):
     # Lee y muestra el contenido del archivo JSON
     data = json.loads(content)
     print(data)
-    firestore_client.collection("mi-coleccion-gcp").add(data)
+    firestore_client.collection("mi-coleccion-gcp").set(data)
