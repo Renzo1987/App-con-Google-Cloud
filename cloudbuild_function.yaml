@@ -3,7 +3,7 @@ steps:
   args:
   - functions
   - deploy
-  - funcion_gcp
+  - hello_gcs
   - --runtime=python39
   - --region=europe-west1
   - --trigger-bucket=gs://bucket_ejercicio_gcp
