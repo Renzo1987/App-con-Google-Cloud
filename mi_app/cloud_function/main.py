@@ -6,7 +6,7 @@ storage_client = storage.Client()
 firestore_client = firestore.Client()
 
 
-def function_gcs(event, context):
+def hello_gcp(event, context):
     # Descarga el archivo desde Cloud Storage
     blob = storage_client.bucket(event["bucket"]).get_blob(event["name"])
     content = blob.download_as_text()

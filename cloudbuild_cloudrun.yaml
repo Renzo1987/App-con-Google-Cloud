@@ -1,11 +1,23 @@
 steps:
-- name: 'gcr.io/cloud-builders/gcloud'
+#Crea la imagen en un contenedor
+- name: 'gcr.io/cloud-builders/docker'
+  args: ['build', '-t', 'gcr.io/$PROJECT_ID/webapp-run:$COMMIT_SHA', './cloud_run']
+
+#Sube la imagen al registro de contenedores de google
+- name: 'gcr.io/cloud-builders/docker'
+  args: ['push', 'gcr.io/$PROJECT_ID/webapp-run:$COMMIT_SHA', './cloud_run']
+
+#Descpliega la imagen en una cloud run
+- name: 'gcr.io/cloudsdktool/cloud-sdk'
+  entrypoint: gcloud
   args:
-  - functions
+  - run
   - deploy
-  - funcion_gcp
-  - --runtime=python39
+  - webapp-run
+  - --image=gcr.io/$PROJECT_ID/webapp-run:$COMMIT_SHA
   - --region=europe-west1
-  - --trigger-bucket=gs://bucket_ejercicio_gcp
+  - --plataform=managed
   - --allow-unauthenticated
-  - --source=./mi_app/cloud_function
+  - --port=5000
+images:
+- 'gcr.io/$PROJECT_ID/webapp-run:$COMMIT_SHA'
