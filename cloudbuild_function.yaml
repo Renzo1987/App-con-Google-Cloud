@@ -6,7 +6,7 @@ steps:
   - function_gcs
   - --runtime=python39
   - --region=europe-west1
-  - --trigger-name=hello_gcp
+  - --trigger-event=hello_gcp
   - --trigger-bucket=gs://bucket_ejercicio_gcp
   - --allow-unauthenticated
   - --source=./mi_app/cloud_function
