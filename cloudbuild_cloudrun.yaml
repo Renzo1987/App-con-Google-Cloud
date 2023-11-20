@@ -1,11 +1,11 @@
 steps:
 #Crea la imagen en un contenedor
 - name: 'gcr.io/cloud-builders/docker'
-  args: ['build', '-t', 'gcr.io/mi-proyecto-thebridge/webapp-run:1.0', './mi_app/cloud_run']
+  args: ['build', '-t', 'gcr.io/mi-proyecto-thebridge/webapp-run:1.1', './mi_app/cloud_run']
 
 #Sube la imagen al registro de contenedores de google
 - name: 'gcr.io/cloud-builders/docker'
-  args: ['push', 'gcr.io/mi-proyecto-thebridge/webapp-run:1.0', './mi_app/cloud_run']
+  args: ['push', 'gcr.io/mi-proyecto-thebridge/webapp-run:1.1', './mi_app/cloud_run']
 
 #Descpliega la imagen en una cloud run
 - name: 'gcr.io/cloudsdktool/cloud-sdk'
@@ -14,10 +14,10 @@ steps:
   - run
   - deploy
   - webapp-run
-  - --image=gcr.io/mi-proyecto-thebridge/webapp-run:1.0
+  - --image=gcr.io/mi-proyecto-thebridge/webapp-run:1.1
   - --region=europe-west1
   - --plataform=managed
   - --allow-unauthenticated
   - --port=8080
 images:
-- 'gcr.io/mi-proyecto-thebridge/webapp-run:1.0'
+- 'gcr.io/mi-proyecto-thebridge/webapp-run:1.1'
