@@ -14,7 +14,7 @@ steps:
   - run
   - deploy
   - webapp-run
-  - --image=europe-west1-docker.pkg.dev/mi-proyecto-thebridge/webapp-run
+  - --image=europe-west1-docker.pkg.dev/mi-proyecto-thebridge/mi-repositorio/webapp-run
   - --region=europe-west1
   - --platform=managed
   - --allow-unauthenticated
