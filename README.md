@@ -202,18 +202,13 @@ if __name__ == '__main__':
     app.run_server(host='0.0.0.0', port=8080, debug=True)
 ```
 Página principal:
-![Formulario](img/Pagina-principal.PNG)
-
+![Pagina-principal.png](img%2FPagina-principal.png)
 
 Página para el formulario:
-
-![Formulario](img/Captura-formulario.PNG)
-
+![Captura-formulario.png](img%2FCaptura-formulario.png)
 
 Página para la tabla de datos:
-
-![tabla](img/Captura-tabla.PNG)
-
+![Captura-tabla.png](img%2FCaptura-tabla.png)
 
 
 **requirements.txt**: Dependencias de python:
