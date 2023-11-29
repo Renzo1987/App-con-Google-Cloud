@@ -1,2 +1,5 @@
-google-cloud-storage
+# Function dependencies, for example:
+# package>=version
+
 google-cloud-firestore
+google-cloud-storage
