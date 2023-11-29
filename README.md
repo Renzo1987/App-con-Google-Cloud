@@ -98,7 +98,7 @@ def read_json_from_gcs(event, context):
 
 La aplicación web, creada con *dash*, esta compuesta por un fichero python:
 
-**app.py**: Pagina web de formulario:
+**app.py** Codigo de la pagina:
 
 ``` python 
 import dash
@@ -201,230 +201,29 @@ def submit_form(n_clicks, nombre, email):
 if __name__ == '__main__':
     app.run_server(host='0.0.0.0', port=8080, debug=True)
 ```
+Página principal:
+![Formulario](img/Pagina-principal.PNG)
 
-**index.html** - Página para el formulario:
+
+Página para el formulario:
 
 ![Formulario](img/Captura-formulario.PNG)
 
-```html
-{% extends "layout.html" %}
 
-{% block main %}
-    <h3 class="section-title">Formulario</h3>
-    <br>
-    <form action="/" method="post">
-        <div class="mb-3">
-            <input autofocus class="form-control mx-auto w-25" id="nombre" name="nombre" placeholder="Nombre" type="text" value='{{ nom }}'>
-        </div>
-        <div class="mb-3">
-            <input autocomplete="off" class="form-control mx-auto w-25" id="email" name="email" placeholder="Correo Electrónico" type="email" value="{{ mail }}">
-        </div>
-        <button class="btn btn-danger" type="submit">Enviar</button>
-    </form>
-
-{% endblock %}
-```
-
-**data.html** - Página para la tabla de datos:
+Página para la tabla de datos:
 
 ![tabla](img/Captura-tabla.PNG)
 
-```html
-{% extends "layout.html" %}
 
-{% block title %}
-    Tabla de usuarios
-{% endblock %}
-
-{% block main %}
-
-    <h3 class="section-title">Tabla de usuarios</h3>
-    <table class="table mx-auto w-50">
-        <thead>
-            <tr>
-                <th scope="col">ID</th>
-                <th scope="col">Nombre</th>
-                <th scope="col">Correo eletrónico</th>
-                <th scope="col">Fecha de registro</th>
-            </tr>
-        </thead>
-        <tbody>
-        {% for item in items %}
-            <tr>
-                <td class="center-align">{{ item["ID"] }}</td>
-                <td class="center-align">{{ item["nombre"] }}</td>
-                <td class="center-align">{{ item["email"] }}</td>
-                <td class="center-align">{{ item["registro"] }}</td>
-            </tr>
-        {% endfor %}
-        </tbody>
-    </table>
-
-{% endblock %}
-```
-
-**styles.css** - Para la estética de la web, importamos la librería de *bootstrap*, y modificamos pequeños detalles con el siguiente fichero CSS:
-
-```css
-body {
-    background-color: #252525;
-}
-
-main {
-    margin-top: 50px;
-}
-
-.navbar {
-    margin-bottom: 20px;
-}
-
-.nav-link, .navbar-brand, .navbar-brand:hover, .section-title {
-    color: white;
-}
-
-.nav-link:hover{
-    color: lightgray;
-}
-
-.logo {
-    width: 70px;
-    padding-right: 15px;
-    padding-top: 5px;
-    padding-bottom: 5px;
-}
-
-.table {
-    color: lightgray
-}
-
-.form-control:focus {
-    border-color: #d9534f;
-    box-shadow: 0 0 0 0.15rem #d9534f;
-} 
-
-.alert{
-    text-align: center;
-}
-```
 
 **requirements.txt**: Dependencias de python:
 
 ```
-google-cloud-firestore==2.13.1
-google-cloud-storage==2.13.0
-Flask==2.2.5
-```
-
-**app.py**: El backend que se encarga de la lógica de la web:
-
-```python
-from flask import Flask, render_template, request, redirect, flash
-from google.cloud import storage, firestore
-import json
-import random
-import datetime
-import time
-
-
-today = datetime.date.today().strftime('%Y-%m-%d')
-todayUTC = int(time.time())
-
-# Crea una aplicación de Flask
-app = Flask(__name__)
-app.config['SECRET_KEY'] = '000000'
-
-
-@app.route("/", methods=["GET", "POST"])
-def index():
-    """
-    Definición: Endpoint para la página de inicio de la web. Contiene un formulario.
-
-    Form: Nombre - Nombre insertado por el usuario.
-    Form: Correo electrónico - email insertado por el usuario.
-
-    Return: index.html
-    """
-    if request.method == "POST":
-        # Creamos un cliente de cloud storage para acceder al bucket
-        storage_client = storage.Client()
-        bucket = storage_client.get_bucket('bucket-juan-ejercicio-final')
-
-        # Comprobamos que se han introducido los datos
-        nombre = request.form.get("nombre")
-        if len(nombre) == 0:
-            flash("¡Introduce un nombre!")
-            return render_template("index.html")
-        
-        email = request.form.get("email")
-        if len(email) == 0:
-            flash("¡Introduce un correo electrónico!")
-            return render_template("index.html", nom=nombre)
-
-        # Comprobamos que el usuario no existe en la base de datos
-        db = firestore.Client()
-        docs = db.collection(u'firestore-juan-ejercicio-final').stream()
-
-        docs_dict = []
-        for doc in docs:
-            docs_dict.append(doc.to_dict())
-
-        existe = False
-
-        for d in docs_dict:
-            if d['email'] == email:
-                existe = True
-
-        if existe == True:
-            flash("¡Este correo electrónico ya ha sido registrado!")
-            return render_template("index.html", nom=nombre, mail=email)
-        else:
-            # Creamos un diccionario con los datos del usuario
-            usuario = {
-                'ID': random.randint(100000, 999999),
-                'nombre': nombre,       # Dato procedente de la web
-                'email': email,         # Dato procedente de la web
-                'registro': today       # Dato procedente de la variable creada arriba
-            }
-
-            try:
-                # Guardamos los datos del usuario en un archivo JSON en cloud storage
-                blob = bucket.blob(f'usuarios{todayUTC}.json')
-                blob.upload_from_string(data=json.dumps(usuario),content_type='application/json')
-                time.sleep(5)
-                return redirect("/data")
-            except:
-                flash("¡Ha ocurrido un error! No se han almacenado los datos.")
-                return render_template("index.html")
-    else:
-        return render_template("index.html")
-
-
-@app.route("/data")
-def data():
-    """
-    Definición: Endpoint para la página de la tabla de usuarios.
-
-    Items - diccionario de datos extraídos de la base de datos
-
-    return: data.html
-    """
-
-    # Configurar conexión con firestore
-    db = firestore.Client()
-    doc_ref = db.collection(u'firestore-juan-ejercicio-final').stream()
-
-    # Obtener los elementos de la tabla
-    items = []
-    for doc in doc_ref:
-        items.append(doc.to_dict())
-    print(items)
-
-    return render_template("data.html", items=items)
-
-
-if __name__ == '__main__':
-    # Ejecuta la aplicación
-    app.run(host="0.0.0.0", port=5000, debug=False)
+dash
+dash-html-components
+dash-table
+google-cloud-firestore
+google-cloud-storage
 ```
 
 ## Parte 3 - Automatización del despliegue:
@@ -445,7 +244,7 @@ Empezamos creando un repositorio de github con rama main y rama dev, donde cambi
 
 Dentro de nuestro repositorio debemos tener un *clodbuild.yaml* que configure la *cloud function* y cree una imagen de los ficheros contenidos en el repositorio, suba esa imagen a *artifact registry* y configure un *cloud run* utilizando esta imagen.
 
-**Clodbuild.yaml** - crear function:
+**Clodbuild.yaml** - Codigo para crear la cloud function:
 
 ```yaml
 steps:
@@ -453,56 +252,59 @@ steps:
   args:
   - functions
   - deploy
-  - frombuckettofirestore
+  - read_json_from_gcs
+  - --runtime=python39
   - --region=europe-west1
-  - --source=./cloud-function
-  - --trigger-bucket=gs://bucket-juan-ejercicio-final
-  - --runtime=python312
+  - --trigger-bucket=gs://bucket_ejercicio_gcp
   - --allow-unauthenticated
+  - --source=./mi_app/cloud_function
 ```
 
 **Dockerfile** - Dockerfile para la creación de la imagen:
 
 ```dockerfile
-FROM python:3.12.0-alpine3.18
+FROM python:3.7-alpine
+COPY app /app
+WORKDIR /app
+RUN pip install -r requirements.txt
+EXPOSE 8080
 
-COPY web web/
-WORKDIR web/
-
-RUN pip install -r "requirements.txt"
-
-CMD ["python", "app.py"]
+CMD ["python","app.py"]
 ```
 
 **Cloudbuild.yaml** - Crear imagen y subirla a *artifact registry*:
 
 ```yaml
+#Crea la imagen en un contenedor
 - name: 'gcr.io/cloud-builders/docker'
-  args: [ 'build', '-t', 'europe-west1-docker.pkg.dev/thebridge-sept23/juan-docker-registro/imagen-ejercicio-final:1.0', '.' ]
+  args: ['build', '-t', 'europe-west1-docker.pkg.dev/mi-proyecto-thebridge/mi-repositorio/webapp-run', './mi_app/cloud_run/']
 
+#Sube la imagen al registro de contenedores de google
 - name: 'gcr.io/cloud-builders/docker'
-  args: ['push', 'europe-west1-docker.pkg.dev/thebridge-sept23/juan-docker-registro/imagen-ejercicio-final:1.0']
+  args: ['push', 'europe-west1-docker.pkg.dev/mi-proyecto-thebridge/mi-repositorio/webapp-run']
 ```
 
-**Cloudbuild.yaml** - Crear *cloud run*
+**Cloudbuild.yaml** - Codigo para crear *cloud run*
 
 ```yaml
-- name: 'gcr.io/google.com/cloudsdktool/cloud-sdk'
+#Despliega la imagen en una cloud run
+- name: 'gcr.io/cloud-builders/gcloud'
   entrypoint: gcloud
-  args: 
+  args:
   - run
   - deploy
-  - cloudrun-juan-ejercicio-final
-  - --image=europe-west1-docker.pkg.dev/thebridge-sept23/juan-docker-registro/imagen-ejercicio-final:1.0
+  - webapp-run
+  - --image=europe-west1-docker.pkg.dev/mi-proyecto-thebridge/mi-repositorio/webapp-run
   - --region=europe-west1
-  - --port=5000
+  - --platform=managed
   - --allow-unauthenticated
+  - --port=8080
 images:
-- europe-west1-docker.pkg.dev/thebridge-sept23/juan-docker-registro/imagen-ejercicio-final:1.0
+- 'europe-west1-docker.pkg.dev/mi-proyecto-thebridge/mi-repositorio/webapp-run'
 ```
 
 ![cloud build](img/Captura-cloudbuild.PNG.png)
 
-Con el *cloud build* satisfactoriamente desplegado, el resultado final es una arquitectura como la siguiente:
+Con la *cloud build* satisfactoriamente desplegada, el resultado final es una arquitectura como la siguiente:
 
 ![Alt text](img/Resultado-final.png)

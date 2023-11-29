@@ -1,5 +1,4 @@
 dash
-#dash-dcc
 dash-html-components
 dash-table
 google-cloud-firestore
