@@ -27,7 +27,7 @@ En el ejemplo que vamos a ver tenemos un endpoint llamado /items y cuatro posibl
 
 ![Alt text](img/02-endpoints.png)
 
-Para gestionar las operaciones configuraremos nuestra *api gateway* para que cuando nuestro CLIENT lance una solicitud, esta ejecutará la lambda que corresponde con esa sokicitud y ese endpoint, y devolverá la respuesta a nuestro CLIENT.
+Para gestionar las operaciones configuraremos nuestra *api gateway* para que cuando nuestro CLIENT lance una solicitud, esta ejecutará la lambda que corresponde con esa solicitud y ese endpoint, y devolverá la respuesta a nuestro CLIENT.
 
 - PUT url/items: Guarda los datos en la base de datos.
 - GET url/items: Devuelve todos los elementos guardados en la base de datos.

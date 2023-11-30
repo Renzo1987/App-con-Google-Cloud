@@ -24,7 +24,7 @@ def obtener_datos_firesore():
     docs = tabla_usuarios.stream()
     items = [doc.to_dict() for doc in docs]
     return items
-
+#hola
 # Configura la aplicación Dash
 app = dash.Dash(__name__, suppress_callback_exceptions=True)
 
